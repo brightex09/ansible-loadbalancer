@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Load Balancer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold app-title text-white">🌐 Load Balancer Dashboard</h1>
+            <h5 class="text-muted">Served by: <span class="fw-bold text-white">{{ hostname }}</span></h5>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-5 mb-4">
+                <div class="card border-success shadow-lg server-card">
+                    <div class="card-header bg-success text-white fw-bold rounded-top">
+                        🟢 Available Servers
+                    </div>
+                    <div class="card-body">
+                        {% if healthy %}
+                            <ul class="list-group list-group-flush">
+                                {% for ip in healthy %}
+                                    <li class="list-group-item text-success fw-semibold bg-dark text-white border-0">{{ ip }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-light fst-italic">No servers are currently available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 mb-4">
+                <div class="card border-danger shadow-lg server-card">
+                    <div class="card-header bg-danger text-white fw-bold rounded-top">
+                        🔴 Unavailable Servers
+                    </div>
+                    <div class="card-body">
+                        {% if unhealthy %}
+                            <ul class="list-group list-group-flush">
+                                {% for ip in unhealthy %}
+                                    <li class="list-group-item text-danger fw-semibold bg-dark text-white border-0">{{ ip }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-light fst-italic">All servers are healthy.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-muted mt-5 small">
+            Flask Load Balancer Monitor © 2025
+        </footer>
+    </div>
+</body>
+</html>
+

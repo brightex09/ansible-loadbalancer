@@ -1,0 +1,18 @@
+events {}
+
+http {
+    upstream flask_upstreams {
+        {% for host in groups['app_servers'] %}
+        server {{ hostvars[host]['ansible_host'] }}:5000;
+        {% endfor %}
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://flask_upstreams;
+        }
+    }
+}
+

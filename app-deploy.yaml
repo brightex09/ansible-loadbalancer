@@ -1,0 +1,42 @@
+- name: Deploy Flask App to Upstream Servers
+  hosts: app_servers
+  become: yes
+
+  tasks:
+    - name: Install required system packages
+      apt:
+        name:
+          - python3
+          - python3-venv
+        state: present
+        update_cache: yes
+
+    - name: Copy Flask app directory
+      copy:
+        src: flask-app/
+        dest: /home/ubuntu/flask-app/
+        mode: 0755
+        owner: ubuntu
+        group: ubuntu
+
+    - name: Ensure ubuntu owns the flask-app directory
+      file:
+        path: /home/ubuntu/flask-app
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        recurse: yes
+
+    - name: Install Flask system-wide
+      become: true
+      apt:
+        name: python3-flask
+        state: present
+
+    - name: Run Flask app in background with nohup
+      shell: nohup python3 app.py > app.log 2>&1 &
+      args:
+        chdir: /home/ubuntu/flask-app
+      async: 0
+      poll: 0
+
